@@ -84,6 +84,9 @@ export const config = {
   DATABASE_URL: requireEnv("DATABASE_URL"),
 
   // App
+  // URL pública donde corre este servicio (sin / al final) — se usa para armar
+  // enlaces a imágenes propias (ej. el QR de Yape) que WhatsApp pueda descargar.
+  PUBLIC_BASE_URL: requireEnv("PUBLIC_BASE_URL"),
   PORT: optionalInt("PORT", 3000),
   NODE_ENV: optionalEnv("NODE_ENV", "development"),
   INTERNAL_ADMIN_SECRET: requireEnv("INTERNAL_ADMIN_SECRET"),

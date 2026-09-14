@@ -20,3 +20,18 @@ export const escalateToHumanTool: Anthropic.Tool = {
     additionalProperties: false,
   },
 };
+
+export const sendPaymentQrTool: Anthropic.Tool = {
+  name: "send_payment_qr",
+  description:
+    "Envía la imagen del QR de Yape para pagar. Úsala cuando el cliente pregunte cómo pagar, " +
+    "quiera pagar por Yape, o pida el QR/número de Yape. No la uses más de una vez por conversación " +
+    "si ya la mandaste hace poco.",
+  strict: true,
+  input_schema: {
+    type: "object",
+    properties: {},
+    required: [],
+    additionalProperties: false,
+  },
+};

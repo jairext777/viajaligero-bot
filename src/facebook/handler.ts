@@ -1,6 +1,7 @@
 import type { MessengerWebhookPayload } from "./webhook.types.js";
 import * as facebookClient from "./facebookClient.js";
 import { processIncomingMessage } from "../messaging/conversationEngine.js";
+import { deliverAgentResult } from "../messaging/sendReply.js";
 import { logger } from "../util/logger.js";
 
 export async function handleMessengerWebhook(payload: MessengerWebhookPayload): Promise<void> {
@@ -29,6 +30,6 @@ async function handleMessengerMessage(senderId: string, mid: string, text: strin
   });
 
   if (result) {
-    await facebookClient.sendTextMessage(senderId, result.replyText);
+    await deliverAgentResult("messenger", senderId, result);
   }
 }

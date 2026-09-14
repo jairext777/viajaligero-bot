@@ -1,6 +1,7 @@
 import type { InstagramWebhookPayload } from "./webhook.types.js";
 import * as instagramClient from "./instagramClient.js";
 import { processIncomingMessage } from "../messaging/conversationEngine.js";
+import { deliverAgentResult } from "../messaging/sendReply.js";
 import { logger } from "../util/logger.js";
 
 export async function handleInstagramWebhook(payload: InstagramWebhookPayload): Promise<void> {
@@ -29,6 +30,6 @@ async function handleInstagramMessage(senderId: string, mid: string, text: strin
   });
 
   if (result) {
-    await instagramClient.sendTextMessage(senderId, result.replyText);
+    await deliverAgentResult("instagram", senderId, result);
   }
 }

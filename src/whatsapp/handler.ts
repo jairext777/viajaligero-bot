@@ -1,8 +1,8 @@
 import { config } from "../config/env.js";
 import { extractUserText, findContactName } from "./messageParser.js";
 import type { WhatsAppMessage, WhatsAppValue, WhatsAppWebhookPayload } from "./webhook.types.js";
-import { sendTextMessage } from "./whatsappClient.js";
 import { processIncomingMessage } from "../messaging/conversationEngine.js";
+import { deliverAgentResult } from "../messaging/sendReply.js";
 import * as escalationService from "../escalation/escalationService.js";
 import { logger } from "../util/logger.js";
 
@@ -46,6 +46,6 @@ async function handleCustomerMessage(message: WhatsAppMessage, value: WhatsAppVa
   });
 
   if (result) {
-    await sendTextMessage(message.from, result.replyText);
+    await deliverAgentResult("whatsapp", message.from, result);
   }
 }

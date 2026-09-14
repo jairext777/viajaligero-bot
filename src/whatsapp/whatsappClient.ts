@@ -31,6 +31,15 @@ export async function sendTextMessage(to: string, body: string): Promise<SendMes
   });
 }
 
+export async function sendImageMessage(to: string, imageUrl: string, caption?: string): Promise<SendMessageResponse> {
+  return callGraph("/messages", {
+    messaging_product: "whatsapp",
+    to,
+    type: "image",
+    image: { link: imageUrl, ...(caption ? { caption } : {}) },
+  });
+}
+
 export async function sendTemplateMessage(
   to: string,
   templateName: string,

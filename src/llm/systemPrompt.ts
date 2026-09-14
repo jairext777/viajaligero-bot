@@ -20,6 +20,12 @@ Si el cliente busca algo relacionado a equipaje de mano/tarifas de aerolínea, t
 recomendación por defecto es el Sacón Multibolsillos; si muestra interés, menciona
 también el Combo como forma de ahorrar.`;
 
+const PAYMENT_RULES = `Cuando el cliente pregunte cómo pagar, o diga que quiere pagar (por Yape o
+en general), ofrece primero Yape (QR o número 941902705) como opción principal, y menciona
+también que puede comprar directo desde la página con la pasarela de pago del carrito. Usa la
+herramienta send_payment_qr para mandar la imagen del QR justo cuando corresponda (no la repitas
+si ya la mandaste hace poco en la misma conversación).`;
+
 const ESCALATION_RULES = `Usa la herramienta escalate_to_human cuando:
 (a) el cliente pide explícitamente hablar con una persona/el dueño/soporte, o
 (b) no tienes una respuesta con confianza en el catálogo o las FAQ (reclamos, pedidos ya
@@ -53,6 +59,7 @@ export function buildSystemPrompt(catalogBlock: string, channel: Channel = "what
     RECOMMENDATION_RULES,
     catalogBlock,
     faqBlock,
+    PAYMENT_RULES,
     ESCALATION_RULES,
     NON_TEXT_RULES,
   ].join("\n\n");

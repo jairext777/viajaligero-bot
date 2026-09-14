@@ -12,7 +12,7 @@ export async function processIncomingMessage(opts: {
   customerName: string | null;
   userText: string;
   rawPayload?: unknown;
-}): Promise<{ replyText: string } | null> {
+}): Promise<{ replyText: string; sendPaymentQr: boolean } | null> {
   const conversation = await db.getOrCreateConversation(opts.channel, opts.externalId, opts.customerName);
 
   // El historial se lee ANTES de insertar el mensaje actual, para no duplicarlo
@@ -41,7 +41,7 @@ export async function processIncomingMessage(opts: {
   const catalogText = await getCatalogText();
   const systemPromptText = buildSystemPrompt(catalogText, opts.channel);
 
-  const { replyText } = await runAgentTurn({
+  const { replyText, sendPaymentQr } = await runAgentTurn({
     history,
     userText: opts.userText,
     systemPromptText,
@@ -57,5 +57,5 @@ export async function processIncomingMessage(opts: {
     content: replyText,
   });
 
-  return { replyText };
+  return { replyText, sendPaymentQr };
 }
