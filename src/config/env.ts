@@ -87,6 +87,8 @@ export const config = {
   PORT: optionalInt("PORT", 3000),
   NODE_ENV: optionalEnv("NODE_ENV", "development"),
   INTERNAL_ADMIN_SECRET: requireEnv("INTERNAL_ADMIN_SECRET"),
+  INBOX_USERNAME: optionalEnv("INBOX_USERNAME", "admin"),
+  INBOX_PASSWORD: optionalEnv("INBOX_PASSWORD", ""),
   CATALOG_CACHE_TTL_MINUTES: optionalInt("CATALOG_CACHE_TTL_MINUTES", 20),
   CONTEXT_WINDOW_HOURS: optionalInt("CONTEXT_WINDOW_HOURS", 12),
   MAX_CONTEXT_MESSAGES: optionalInt("MAX_CONTEXT_MESSAGES", 20),

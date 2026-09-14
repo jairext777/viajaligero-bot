@@ -10,7 +10,8 @@ export const inboxRouter = Router();
 
 function requireBasicAuth(req: Request, res: Response, next: NextFunction): void {
   const header = req.header("authorization");
-  const expected = "Basic " + Buffer.from(`admin:${config.INTERNAL_ADMIN_SECRET}`).toString("base64");
+  const password = config.INBOX_PASSWORD || config.INTERNAL_ADMIN_SECRET;
+  const expected = "Basic " + Buffer.from(`${config.INBOX_USERNAME}:${password}`).toString("base64");
 
   if (header !== expected) {
     res.set("WWW-Authenticate", 'Basic realm="Viaje Ligero"');
