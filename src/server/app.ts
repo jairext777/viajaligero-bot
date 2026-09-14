@@ -10,6 +10,7 @@ import { logger } from "../util/logger.js";
 export function createApp() {
   const app = express();
   app.use(express.json({ verify: captureRawBody }));
+  app.use(express.urlencoded({ extended: true }));
 
   app.use(webhookRouter);
   app.use(inboxRouter);

@@ -17,6 +17,10 @@ const PAGE_STYLES = `
   .bubble-assistant { background: #d9f2e6; margin-left: auto; }
   .thread { display: flex; flex-direction: column; max-width: 640px; }
   .meta { color: #888; font-size: 12px; margin-top: 24px; }
+  .reply-form { display: flex; gap: 8px; max-width: 640px; margin-top: 16px; }
+  .reply-form input[type=text] { flex: 1; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+  .reply-form button { padding: 10px 20px; border: none; border-radius: 8px; background: #0a66c2; color: white; font-weight: 600; cursor: pointer; }
+  .banner { background: #fff3cd; color: #856404; padding: 8px 14px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; }
 `;
 
 function page(title: string, body: string): string {
@@ -56,6 +60,7 @@ export function renderConversationList(conversations: ConversationRow[]): string
 export function renderConversationThread(
   conversation: ConversationRow,
   messages: Array<{ role: MessageRole; content: string; created_at: Date }>,
+  opts?: { justReplied?: boolean; error?: string },
 ): string {
   const bubbles = messages
     .map(
@@ -69,11 +74,25 @@ export function renderConversationThread(
       ? `<p><strong>Escalado</strong> — motivo: ${escapeHtml(conversation.escalation_reason ?? "")} — ${escapeHtml(conversation.escalation_summary ?? "")}</p>`
       : "";
 
+  const banner = opts?.justReplied
+    ? '<div class="banner">Respuesta enviada. La conversación quedó marcada como resuelta.</div>'
+    : opts?.error
+      ? `<div class="banner">No se pudo enviar: ${escapeHtml(opts.error)}</div>`
+      : "";
+
+  const replyForm = `
+    <form class="reply-form" method="POST" action="/internal/inbox/${conversation.id}/reply">
+      <input type="text" name="text" placeholder="Escribe tu respuesta..." required autocomplete="off">
+      <button type="submit">Enviar</button>
+    </form>`;
+
   return page(
     "Conversación — Viaje Ligero",
     `<p><a href="/internal/inbox">&larr; Volver</a></p>
      <h1>${escapeHtml(conversation.customer_name ?? conversation.customer_external_id)} <span class="channel">(${conversation.channel})</span></h1>
+     ${banner}
      ${escalationInfo}
-     <div class="thread">${bubbles || "<p>Sin mensajes.</p>"}</div>`,
+     <div class="thread">${bubbles || "<p>Sin mensajes.</p>"}</div>
+     ${replyForm}`,
   );
 }
