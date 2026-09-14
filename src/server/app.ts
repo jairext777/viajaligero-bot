@@ -3,7 +3,6 @@ import type { Request, Response } from "express";
 import { captureRawBody } from "./rawBody.js";
 import { webhookRouter } from "../webhook/router.js";
 import { inboxRouter } from "../inbox/router.js";
-import { migrateRouter } from "../inbox/migrateRouter.js";
 import { refreshCatalog } from "../shopify/catalogSync.js";
 import { config } from "../config/env.js";
 import { logger } from "../util/logger.js";
@@ -15,7 +14,6 @@ export function createApp() {
 
   app.use(webhookRouter);
   app.use(inboxRouter);
-  app.use(migrateRouter);
 
   app.post("/internal/catalog/refresh", async (req: Request, res: Response) => {
     if (req.header("x-internal-secret") !== config.INTERNAL_ADMIN_SECRET) {
