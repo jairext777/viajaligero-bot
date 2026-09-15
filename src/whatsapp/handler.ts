@@ -14,7 +14,9 @@ export async function handleWhatsAppWebhook(payload: WhatsAppWebhookPayload): Pr
 
       for (const message of value.messages) {
         if (!message.from) {
-          logger.warn({ message }, "Mensaje de WhatsApp sin 'from', se ignora");
+          // Railway no reenvía campos extra de los logs (solo el texto), así que el
+          // detalle va directo en el mensaje para poder diagnosticarlo.
+          logger.warn(`Mensaje de WhatsApp sin 'from', se ignora. Payload: ${JSON.stringify(message)}`);
           continue;
         }
         try {
@@ -25,7 +27,9 @@ export async function handleWhatsAppWebhook(payload: WhatsAppWebhookPayload): Pr
           }
         } catch (err) {
           // Que un mensaje falle no debe tumbar el resto de mensajes del mismo webhook.
-          logger.error({ err, message }, "Error procesando un mensaje individual de WhatsApp");
+          logger.error(
+            `Error procesando un mensaje individual de WhatsApp: ${(err as Error).message}. Payload: ${JSON.stringify(message)}`,
+          );
         }
       }
     }

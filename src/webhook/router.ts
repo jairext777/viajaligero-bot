@@ -28,7 +28,7 @@ webhookRouter.get("/webhook/whatsapp", (req: Request, res: Response) => {
 webhookRouter.post("/webhook/whatsapp", verifyMetaSignature, (req: Request, res: Response) => {
   res.sendStatus(200);
   handleIncomingWebhook(req.body).catch((err) => {
-    logger.error({ err }, "Error procesando webhook entrante");
+    logger.error(`Error procesando webhook entrante: ${err instanceof Error ? err.stack ?? err.message : String(err)}`);
   });
 });
 
@@ -44,6 +44,6 @@ async function handleIncomingWebhook(payload: { object?: string }): Promise<void
       await handleInstagramWebhook(payload as unknown as InstagramWebhookPayload);
       return;
     default:
-      logger.warn({ object: payload.object }, "Webhook con 'object' desconocido, se ignora");
+      logger.warn(`Webhook con 'object' desconocido, se ignora: ${payload.object}`);
   }
 }
