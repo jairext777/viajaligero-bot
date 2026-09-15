@@ -13,17 +13,22 @@ export async function handleWhatsAppWebhook(payload: WhatsAppWebhookPayload): Pr
       if (!value.messages) continue; // delivery/read receipts u otros eventos, no mensajes entrantes
 
       for (const message of value.messages) {
-        if (!message.from) {
-          // Railway no reenvía campos extra de los logs (solo el texto), así que el
-          // detalle va directo en el mensaje para poder diagnosticarlo.
-          logger.warn(`Mensaje de WhatsApp sin 'from', se ignora. Payload: ${JSON.stringify(message)}`);
+        // Mensajes normales traen "from" (el número). Mensajes que llegan por anuncios
+        // "Click to WhatsApp" pueden traer en su lugar "from_user_id" (un identificador
+        // opaco tipo "PE.xxxxx") sin exponer el número real — se puede usar igual como
+        // identificador del cliente y como destinatario al responder.
+        const senderId = message.from ?? message.from_user_id;
+
+        if (!senderId) {
+          logger.warn(`Mensaje de WhatsApp sin remitente, se ignora. Payload: ${JSON.stringify(message)}`);
           continue;
         }
+
         try {
-          if (config.SUPPORT_WHATSAPP_NUMBERS.includes(message.from)) {
-            await handleSupportTeamMessage(message);
+          if (config.SUPPORT_WHATSAPP_NUMBERS.includes(senderId)) {
+            await handleSupportTeamMessage(message, senderId);
           } else {
-            await handleCustomerMessage(message, value);
+            await handleCustomerMessage(message, value, senderId);
           }
         } catch (err) {
           // Que un mensaje falle no debe tumbar el resto de mensajes del mismo webhook.
@@ -36,22 +41,22 @@ export async function handleWhatsAppWebhook(payload: WhatsAppWebhookPayload): Pr
   }
 }
 
-async function handleSupportTeamMessage(message: WhatsAppMessage): Promise<void> {
+async function handleSupportTeamMessage(message: WhatsAppMessage, senderId: string): Promise<void> {
   const repliedToWamid = message.context?.id;
   if (!repliedToWamid) return;
-  const resolved = await escalationService.resolveFromTeamReply(repliedToWamid, message.from);
+  const resolved = await escalationService.resolveFromTeamReply(repliedToWamid, senderId);
   if (resolved) {
-    logger.info({ from: message.from }, "Conversación resuelta por el equipo de soporte");
+    logger.info(`Conversación resuelta por el equipo de soporte (${senderId})`);
   }
 }
 
-async function handleCustomerMessage(message: WhatsAppMessage, value: WhatsAppValue): Promise<void> {
-  const customerName = findContactName(value, message.from);
+async function handleCustomerMessage(message: WhatsAppMessage, value: WhatsAppValue, senderId: string): Promise<void> {
+  const customerName = findContactName(value, senderId);
   const userText = extractUserText(message);
 
   const result = await processIncomingMessage({
     channel: "whatsapp",
-    externalId: message.from,
+    externalId: senderId,
     externalMessageId: message.id,
     customerName,
     userText,
@@ -59,6 +64,6 @@ async function handleCustomerMessage(message: WhatsAppMessage, value: WhatsAppVa
   });
 
   if (result) {
-    await deliverAgentResult("whatsapp", message.from, result);
+    await deliverAgentResult("whatsapp", senderId, result);
   }
 }

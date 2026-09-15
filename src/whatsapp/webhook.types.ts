@@ -27,7 +27,11 @@ export interface WhatsAppContact {
 }
 
 export interface WhatsAppMessage {
-  from: string;
+  // Mensajes normales traen "from" (el número de teléfono). Mensajes que llegan por
+  // anuncios "Click to WhatsApp" pueden traer en su lugar "from_user_id" (un
+  // identificador opaco tipo "PE.xxxxx"), sin exponer el número real.
+  from?: string;
+  from_user_id?: string;
   id: string;
   timestamp: string;
   type: string;
