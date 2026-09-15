@@ -14,8 +14,12 @@ export async function handleInstagramWebhook(payload: InstagramWebhookPayload): 
 
   for (const entry of payload.entry ?? []) {
     for (const event of entry.messaging ?? []) {
-      if (!event.message?.text) continue;
-      await handleInstagramMessage(event.sender.id, event.message.mid, event.message.text);
+      if (!event.message?.text || !event.sender?.id) continue;
+      try {
+        await handleInstagramMessage(event.sender.id, event.message.mid, event.message.text);
+      } catch (err) {
+        logger.error({ err, event }, "Error procesando un mensaje individual de Instagram");
+      }
     }
   }
 }

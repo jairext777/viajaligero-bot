@@ -13,10 +13,19 @@ export async function handleWhatsAppWebhook(payload: WhatsAppWebhookPayload): Pr
       if (!value.messages) continue; // delivery/read receipts u otros eventos, no mensajes entrantes
 
       for (const message of value.messages) {
-        if (config.SUPPORT_WHATSAPP_NUMBERS.includes(message.from)) {
-          await handleSupportTeamMessage(message);
-        } else {
-          await handleCustomerMessage(message, value);
+        if (!message.from) {
+          logger.warn({ message }, "Mensaje de WhatsApp sin 'from', se ignora");
+          continue;
+        }
+        try {
+          if (config.SUPPORT_WHATSAPP_NUMBERS.includes(message.from)) {
+            await handleSupportTeamMessage(message);
+          } else {
+            await handleCustomerMessage(message, value);
+          }
+        } catch (err) {
+          // Que un mensaje falle no debe tumbar el resto de mensajes del mismo webhook.
+          logger.error({ err, message }, "Error procesando un mensaje individual de WhatsApp");
         }
       }
     }

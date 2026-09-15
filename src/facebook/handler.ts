@@ -12,8 +12,12 @@ export async function handleMessengerWebhook(payload: MessengerWebhookPayload): 
 
   for (const entry of payload.entry ?? []) {
     for (const event of entry.messaging ?? []) {
-      if (!event.message?.text) continue; // ignora confirmaciones de lectura/entrega y adjuntos sin texto
-      await handleMessengerMessage(event.sender.id, event.message.mid, event.message.text);
+      if (!event.message?.text || !event.sender?.id) continue; // ignora confirmaciones/adjuntos sin texto o sin remitente
+      try {
+        await handleMessengerMessage(event.sender.id, event.message.mid, event.message.text);
+      } catch (err) {
+        logger.error({ err, event }, "Error procesando un mensaje individual de Messenger");
+      }
     }
   }
 }
