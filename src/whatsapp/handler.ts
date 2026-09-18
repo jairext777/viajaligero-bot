@@ -1,6 +1,6 @@
 import { config } from "../config/env.js";
 import { extractUserText, findContactName } from "./messageParser.js";
-import type { WhatsAppMessage, WhatsAppValue, WhatsAppWebhookPayload } from "./webhook.types.js";
+import type { WhatsAppMessage, WhatsAppStatus, WhatsAppValue, WhatsAppWebhookPayload } from "./webhook.types.js";
 import { processIncomingMessage } from "../messaging/conversationEngine.js";
 import { deliverAgentResult } from "../messaging/sendReply.js";
 import * as escalationService from "../escalation/escalationService.js";
@@ -10,7 +10,12 @@ export async function handleWhatsAppWebhook(payload: WhatsAppWebhookPayload): Pr
   for (const entry of payload.entry ?? []) {
     for (const change of entry.changes ?? []) {
       const value = change.value;
-      if (!value.messages) continue; // delivery/read receipts u otros eventos, no mensajes entrantes
+
+      for (const status of value.statuses ?? []) {
+        handleStatusUpdate(status);
+      }
+
+      if (!value.messages) continue;
 
       for (const message of value.messages) {
         // Mensajes normales traen "from" (el número). Mensajes que llegan por anuncios
@@ -39,6 +44,14 @@ export async function handleWhatsAppWebhook(payload: WhatsAppWebhookPayload): Pr
       }
     }
   }
+}
+
+function handleStatusUpdate(status: WhatsAppStatus): void {
+  if (status.status !== "failed") return;
+  const errors = (status.errors ?? []).map((e) => `${e.code} ${e.title}${e.error_data?.details ? ` (${e.error_data.details})` : ""}`);
+  logger.error(
+    `Entrega fallida de WhatsApp a ${status.recipient_id} (wamid ${status.id}): ${errors.join("; ") || "sin detalle"}`,
+  );
 }
 
 async function handleSupportTeamMessage(message: WhatsAppMessage, senderId: string): Promise<void> {

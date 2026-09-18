@@ -18,7 +18,15 @@ export interface WhatsAppValue {
   metadata: { display_phone_number: string; phone_number_id: string };
   contacts?: WhatsAppContact[];
   messages?: WhatsAppMessage[];
-  statuses?: unknown[];
+  statuses?: WhatsAppStatus[];
+}
+
+export interface WhatsAppStatus {
+  id: string; // wamid del mensaje que reporta este estado
+  status: "sent" | "delivered" | "read" | "failed";
+  recipient_id: string;
+  timestamp: string;
+  errors?: Array<{ code: number; title: string; message?: string; error_data?: { details?: string } }>;
 }
 
 export interface WhatsAppContact {
