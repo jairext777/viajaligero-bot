@@ -56,10 +56,11 @@ function handleStatusUpdate(status: WhatsAppStatus): void {
 
 async function handleSupportTeamMessage(message: WhatsAppMessage, senderId: string): Promise<void> {
   const repliedToWamid = message.context?.id;
-  if (!repliedToWamid) return;
-  const resolved = await escalationService.resolveFromTeamReply(repliedToWamid, senderId);
-  if (resolved) {
-    logger.info(`Conversación resuelta por el equipo de soporte (${senderId})`);
+  if (!repliedToWamid) return; // no es una respuesta citando un aviso de escalación, se ignora
+  const text = extractUserText(message);
+  const relayed = await escalationService.relayTeamReply(repliedToWamid, senderId, text);
+  if (relayed) {
+    logger.info(`Respuesta del equipo procesada para wamid ${repliedToWamid} (${senderId})`);
   }
 }
 

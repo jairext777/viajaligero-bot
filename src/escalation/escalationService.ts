@@ -3,6 +3,7 @@ import { buildEscalationTemplateParams } from "./templates.js";
 import { config } from "../config/env.js";
 import { logger } from "../util/logger.js";
 import * as db from "../db/conversations.repo.js";
+import { sendReply } from "../messaging/sendReply.js";
 import type { EscalationReason } from "../db/types.js";
 
 export async function escalate(opts: {
@@ -54,10 +55,26 @@ export async function escalate(opts: {
   return { notifiedAny };
 }
 
-export async function resolveFromTeamReply(repliedToWamid: string, resolvedBy: string): Promise<boolean> {
+// El equipo responde por WhatsApp citando/respondiendo el aviso de escalación (así
+// funciona sin importar cuántas escalaciones haya al mismo tiempo, cada una con su
+// propio wamid). El texto que escriban se le reenvía tal cual al cliente, y se puede
+// seguir respondiendo las veces que haga falta sobre la misma cita — la conversación
+// queda "escalated" (el bot en silencio) hasta que se resuelva a propósito, ya sea
+// escribiendo "/resuelto" o marcándola resuelta desde el visor.
+export async function relayTeamReply(repliedToWamid: string, fromNumber: string, text: string): Promise<boolean> {
   const conversationId = await db.findConversationByNotificationWamid(repliedToWamid);
   if (!conversationId) return false;
-  await db.resolveConversation(conversationId, resolvedBy);
+
+  if (text.trim().toLowerCase() === "/resuelto") {
+    await db.resolveConversation(conversationId, fromNumber);
+    return true;
+  }
+
+  const conversation = await db.getConversationById(conversationId);
+  if (!conversation) return false;
+
+  await sendReply(conversation.channel, conversation.customer_external_id, text);
+  await db.insertMessage({ conversationId, externalMessageId: null, role: "assistant", content: text });
   return true;
 }
 
