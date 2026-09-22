@@ -125,6 +125,14 @@ export async function getAllMessages(
   return result.rows;
 }
 
+export async function getLastCustomerMessageAt(conversationId: number): Promise<Date | null> {
+  const result = await pool.query<{ created_at: Date }>(
+    `SELECT created_at FROM messages WHERE conversation_id = $1 AND role = 'user' ORDER BY created_at DESC LIMIT 1`,
+    [conversationId],
+  );
+  return result.rows[0]?.created_at ?? null;
+}
+
 export async function autoResolveStale(hours: number): Promise<number> {
   const result = await pool.query<{ id: number }>(
     `UPDATE conversations

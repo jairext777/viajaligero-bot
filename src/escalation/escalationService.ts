@@ -1,4 +1,4 @@
-import { sendTemplateMessage } from "../whatsapp/whatsappClient.js";
+import { sendTemplateMessage, sendTextMessage } from "../whatsapp/whatsappClient.js";
 import { buildEscalationTemplateParams } from "./templates.js";
 import { config } from "../config/env.js";
 import { logger } from "../util/logger.js";
@@ -72,6 +72,23 @@ export async function relayTeamReply(repliedToWamid: string, fromNumber: string,
 
   const conversation = await db.getConversationById(conversationId);
   if (!conversation) return false;
+
+  // WhatsApp bloquea el texto libre si pasaron más de 24h desde el último mensaje del
+  // cliente — antes esto fallaba en silencio (el envío "aparentaba" funcionar y el
+  // fallo real llegaba después, async, sin que el equipo se enterara). Ahora se avisa
+  // de inmediato en vez de intentar un envío que sabemos que va a fallar.
+  const lastCustomerMessageAt = await db.getLastCustomerMessageAt(conversationId);
+  const hoursSinceLastMessage = lastCustomerMessageAt
+    ? (Date.now() - lastCustomerMessageAt.getTime()) / (1000 * 60 * 60)
+    : Infinity;
+
+  if (hoursSinceLastMessage >= 24) {
+    await sendTextMessage(
+      fromNumber,
+      `⚠️ No se pudo mandar ese mensaje: pasaron más de 24h desde que ${conversation.customer_name ?? conversation.customer_external_id} escribió por última vez, y WhatsApp bloquea el texto libre fuera de esa ventana. Pídele que te escriba de nuevo primero (así se vuelve a abrir la ventana), o contáctalo por otro medio.`,
+    );
+    return true;
+  }
 
   await sendReply(conversation.channel, conversation.customer_external_id, text);
   await db.insertMessage({ conversationId, externalMessageId: null, role: "assistant", content: text });
