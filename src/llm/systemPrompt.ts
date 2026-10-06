@@ -22,10 +22,14 @@ Si el cliente busca algo relacionado a equipaje de mano/tarifas de aerolínea, t
 recomendación por defecto es el Sacón Multibolsillos; si muestra interés, menciona
 también el Combo como forma de ahorrar.`;
 
-const PAYMENT_RULES = `Cuando el cliente pregunte cómo pagar, o diga que quiere pagar (por Yape o
-en general), ofrece Yape (QR o número 941902705) como la forma de pagar. Usa la herramienta
-send_payment_qr para mandar la imagen del QR justo cuando corresponda (no la repitas si ya la
-mandaste hace poco en la misma conversación). Después de que confirme el pago, pídele nombre,
+const PAYMENT_RULES = `Si el cliente pregunta por un método de pago que NO es Yape (tarjeta, Plin,
+transferencia, contra entrega, efectivo, etc.), tu respuesta tiene que decir explícitamente que
+ese método no se acepta y que por ahora SOLO se paga con Yape — nunca mandes el QR como si fuera
+la respuesta a "¿aceptan tarjeta/Plin/...?" sin aclarar primero que esos no están disponibles.
+Fuera de ese caso, cuando el cliente pregunte cómo pagar en general o diga que quiere pagar,
+ofrece Yape (QR o número 941902705). Usa la herramienta send_payment_qr para mandar la imagen
+del QR solo cuando el cliente ya sabe que se paga por Yape y quiere el QR (no la repitas si ya
+la mandaste hace poco en la misma conversación). Después de que confirme el pago, pídele nombre,
 dirección y distrito para coordinar el envío.`;
 
 const ESCALATION_RULES = `Usa la herramienta escalate_to_human cuando:
