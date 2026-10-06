@@ -53,9 +53,10 @@ export const config = {
   META_PAGE_ID: optionalEnv("META_PAGE_ID", ""),
   INSTAGRAM_ACCOUNT_ID: optionalEnv("INSTAGRAM_ACCOUNT_ID", ""),
 
-  // Usado en el CTA que el bot muestra en Messenger para dirigir al cliente a
-  // completar su compra por WhatsApp.
+  // Usados en el CTA que el bot muestra para dirigir al cliente a completar su
+  // compra por WhatsApp o directo en la tienda.
   PUBLIC_WHATSAPP_NUMBER: optionalEnv("PUBLIC_WHATSAPP_NUMBER", ""),
+  STORE_URL: optionalEnv("STORE_URL", "https://viajaligero.pe"),
 
   // Anthropic
   ANTHROPIC_API_KEY: requireEnv("ANTHROPIC_API_KEY"),

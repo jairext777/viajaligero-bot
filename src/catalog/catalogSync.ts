@@ -9,6 +9,7 @@ interface CatalogProduct {
   price: string;
   variants: string[];
   description: string;
+  link: string;
 }
 
 interface CatalogData {
@@ -24,11 +25,12 @@ function loadCatalog(): CatalogData {
 
 function formatAvailableLine(product: CatalogProduct): string {
   const variantsText = product.variants.length > 0 ? ` — Variantes: ${product.variants.join(", ")}` : "";
-  return `- **${product.name}** — ${product.price}${variantsText} — ${product.description}`;
+  return `- **${product.name}** — ${product.price}${variantsText} — ${product.description} — ${product.link}`;
 }
 
-// Catálogo fijo (ya no viene de Shopify, la tienda canceló su suscripción). Se edita
-// a mano en src/content/catalog.json cuando cambie algo — igual que el FAQ.
+// Catálogo fijo (la tienda canceló y luego volvió a conectar Shopify, pero el bot ya no
+// depende de esa API: el catálogo se mantiene a mano en src/content/catalog.json, igual
+// que el FAQ, para no volver a romperse si la tienda cambia de proveedor otra vez).
 export async function getCatalogText(): Promise<string> {
   const catalog = loadCatalog();
 
@@ -40,7 +42,7 @@ export async function getCatalogText(): Promise<string> {
     "CATÁLOGO DISPONIBLE PARA RECOMENDAR (los únicos productos que puedes vender/recomendar):",
     availableBlock,
     "",
-    "PRODUCTOS NO DISPONIBLES (NO recomendar, NO dar precio; si preguntan por ellos, decir que no está disponible por ahora y ofrecer una alternativa del catálogo disponible):",
+    "PRODUCTOS NO DISPONIBLES (NO recomendar, NO dar precio ni link; si preguntan por ellos, decir que no está disponible por ahora y ofrecer una alternativa del catálogo disponible):",
     hiddenBlock,
   ].join("\n");
 }

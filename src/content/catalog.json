@@ -4,25 +4,22 @@
       "name": "Sacón Multibolsillos ViajaLigero | Anti-Carry-On",
       "price": "PEN 350.0",
       "variants": ["Negro", "Verde", "Gris"],
-      "description": "¿Cansado de pagar tarifas abusivas por tu equipaje de mano? El Sacón Multibolsillos es una casaca con muchos bolsillos para llevar tus cosas puestas y no pagar extra por equipaje."
+      "description": "¿Cansado de pagar tarifas abusivas por tu equipaje de mano? El Sacón Multibolsillos es una casaca con muchos bolsillos para llevar tus cosas puestas y no pagar extra por equipaje.",
+      "link": "https://viajaligero.pe/products/sacon"
     },
     {
-      "name": "Combo Viaja Ligero: Sacón Multibolsillos + Almohada de Viaje Secreto",
-      "price": "PEN 279.0",
-      "variants": [],
-      "description": "Viaja con más comodidad y menos equipaje. El combo reúne el Sacón Multibolsillos con la Almohada de Viaje Secreto."
-    },
-    {
-      "name": "Almohada de Viaje Secreto: Tu Equipaje Extra Camuflado",
+      "name": "Almohada de Viaje Secreto (Cuellera): Tu Equipaje Extra Camuflado",
       "price": "PEN 29.0",
       "variants": [],
-      "description": "Una almohada de viaje que también sirve como equipaje extra camuflado, para cuando no te entra nada más en la mochila."
+      "description": "Una almohada/cuellera de viaje que también sirve como equipaje extra camuflado, para cuando no te entra nada más en la mochila.",
+      "link": "https://viajaligero.pe/products/collarin"
     },
     {
       "name": "Kit de Bolsa al Vacío + Extractor Manual | Ahorra Espacio en tu Viaje",
       "price": "PEN 19.9",
       "variants": [],
-      "description": "Reduce tu ropa a la mitad y multiplica el espacio de tu maleta con bolsas al vacío y un extractor manual."
+      "description": "Reduce tu ropa a la mitad y multiplica el espacio de tu maleta con bolsas al vacío y un extractor manual.",
+      "link": "https://viajaligero.pe/products/kit-de-bolsa-al-vacio-extractor-manual-ahorra-espacio-en-tu-viaje"
     }
   ],
   "hidden": [
@@ -30,6 +27,7 @@
     "Chaleco",
     "Cartuchera de higiene",
     "Porta medicamentos",
-    "Porta pasaporte"
+    "Porta pasaporte",
+    "Combo Viaja Ligero: Sacón Multibolsillos + Almohada de Viaje Secreto"
   ]
 }
