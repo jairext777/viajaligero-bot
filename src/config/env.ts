@@ -35,19 +35,6 @@ function parseNumberList(name: string): string[] {
   return numbers;
 }
 
-const shopifyApiVersion = requireEnv("SHOPIFY_API_VERSION");
-
-// Shopify tradujo silenciosamente el estado UNLISTED a ACTIVE en versiones de API
-// anteriores a 2025-10. Con una versión más vieja, el bot recomendaría productos
-// que la tienda ocultó a propósito. La comparación de string funciona porque el
-// formato YYYY-MM ordena igual que cronológicamente.
-if (shopifyApiVersion < "2025-10") {
-  throw new Error(
-    `SHOPIFY_API_VERSION debe ser "2025-10" o más nueva (recibido "${shopifyApiVersion}"): ` +
-      "versiones anteriores traducen productos UNLISTED a ACTIVE y el bot los recomendaría por error.",
-  );
-}
-
 export const config = {
   // Meta / WhatsApp Cloud API
   META_APP_SECRET: requireEnv("META_APP_SECRET"),
@@ -66,15 +53,9 @@ export const config = {
   META_PAGE_ID: optionalEnv("META_PAGE_ID", ""),
   INSTAGRAM_ACCOUNT_ID: optionalEnv("INSTAGRAM_ACCOUNT_ID", ""),
 
-  // Usados en el CTA que el bot muestra en Messenger/Instagram para dirigir al cliente
-  // a completar su compra por WhatsApp o directo en la tienda.
+  // Usado en el CTA que el bot muestra en Messenger para dirigir al cliente a
+  // completar su compra por WhatsApp.
   PUBLIC_WHATSAPP_NUMBER: optionalEnv("PUBLIC_WHATSAPP_NUMBER", ""),
-  STORE_URL: optionalEnv("STORE_URL", "https://viajaligero.pe"),
-
-  // Shopify
-  SHOPIFY_SHOP_DOMAIN: requireEnv("SHOPIFY_SHOP_DOMAIN"),
-  SHOPIFY_ADMIN_ACCESS_TOKEN: requireEnv("SHOPIFY_ADMIN_ACCESS_TOKEN"),
-  SHOPIFY_API_VERSION: shopifyApiVersion,
 
   // Anthropic
   ANTHROPIC_API_KEY: requireEnv("ANTHROPIC_API_KEY"),
@@ -92,7 +73,6 @@ export const config = {
   INTERNAL_ADMIN_SECRET: requireEnv("INTERNAL_ADMIN_SECRET"),
   INBOX_USERNAME: optionalEnv("INBOX_USERNAME", "admin"),
   INBOX_PASSWORD: optionalEnv("INBOX_PASSWORD", ""),
-  CATALOG_CACHE_TTL_MINUTES: optionalInt("CATALOG_CACHE_TTL_MINUTES", 20),
   CONTEXT_WINDOW_HOURS: optionalInt("CONTEXT_WINDOW_HOURS", 12),
   MAX_CONTEXT_MESSAGES: optionalInt("MAX_CONTEXT_MESSAGES", 20),
   ESCALATION_AUTO_RESOLVE_HOURS: optionalInt("ESCALATION_AUTO_RESOLVE_HOURS", 24),

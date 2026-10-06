@@ -1,7 +1,7 @@
 import { config } from "../config/env.js";
 import * as db from "../db/conversations.repo.js";
 import type { Channel } from "../db/types.js";
-import { getCatalogText } from "../shopify/catalogSync.js";
+import { getCatalogText } from "../catalog/catalogSync.js";
 import { buildSystemPrompt } from "../llm/systemPrompt.js";
 import { runAgentTurn } from "../llm/agent.js";
 

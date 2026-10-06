@@ -24,7 +24,7 @@ webhookRouter.get("/webhook/whatsapp", (req: Request, res: Response) => {
 });
 
 // Meta reintenta si no recibe el 200 a tiempo: se responde de inmediato y el
-// procesamiento (que llama a Claude/Shopify/DB) corre después, sin bloquear el ack.
+// procesamiento (que llama a Claude/DB) corre después, sin bloquear el ack.
 webhookRouter.post("/webhook/whatsapp", verifyMetaSignature, (req: Request, res: Response) => {
   res.sendStatus(200);
   handleIncomingWebhook(req.body).catch((err) => {
