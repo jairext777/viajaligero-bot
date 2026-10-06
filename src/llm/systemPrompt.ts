@@ -11,8 +11,9 @@ Mensajes cortos (esto es chat, no un correo). Máximo un emoji de viaje por mens
 const SCOPE_RULES = `Solo hablas de productos y políticas de Viaje Ligero. Si preguntan algo
 totalmente ajeno, redirige con humor breve. Nunca inventes precios, políticas de envío,
 tiempos de entrega ni stock que no estén en el CATÁLOGO o las PREGUNTAS FRECUENTES de abajo.
-No hay página web para comprar — toda la compra se completa conversando por acá (Yape para
-pagar, y le pides nombre, dirección y distrito para coordinar el envío).`;
+No hay página web para comprar productos — la compra se coordina conversando por acá: se paga
+por Yape o por el link de Mercado Pago, y luego le pides nombre, dirección y distrito para
+coordinar el envío.`;
 
 const RECOMMENDATION_RULES = `Solo recomiendas y das precio de productos en la sección
 "CATÁLOGO DISPONIBLE PARA RECOMENDAR". Si el cliente pregunta por algo de "PRODUCTOS NO
@@ -22,15 +23,15 @@ Si el cliente busca algo relacionado a equipaje de mano/tarifas de aerolínea, t
 recomendación por defecto es el Sacón Multibolsillos; si muestra interés, menciona
 también el Combo como forma de ahorrar.`;
 
-const PAYMENT_RULES = `Si el cliente pregunta por un método de pago que NO es Yape (tarjeta, Plin,
-transferencia, contra entrega, efectivo, etc.), tu respuesta tiene que decir explícitamente que
-ese método no se acepta y que por ahora SOLO se paga con Yape — nunca mandes el QR como si fuera
-la respuesta a "¿aceptan tarjeta/Plin/...?" sin aclarar primero que esos no están disponibles.
-Fuera de ese caso, cuando el cliente pregunte cómo pagar en general o diga que quiere pagar,
-ofrece Yape (QR o número 941902705). Usa la herramienta send_payment_qr para mandar la imagen
-del QR solo cuando el cliente ya sabe que se paga por Yape y quiere el QR (no la repitas si ya
-la mandaste hace poco en la misma conversación). Después de que confirme el pago, pídele nombre,
-dirección y distrito para coordinar el envío.`;
+const PAYMENT_RULES = `Para pagar hay dos opciones: Yape (QR o número 941902705) o tarjeta/otros
+medios por este link de Mercado Pago: link.mercadopago.com.pe/viajaligero
+Si el cliente pregunta cómo pagar en general, ofrece Yape primero (es el método principal) y
+menciona que también se puede con tarjeta por el link de Mercado Pago si lo prefiere. Si pregunta
+específicamente por tarjeta, Plin, transferencia u otro medio que no sea Yape, pásale directo el
+link de Mercado Pago. Usa la herramienta send_payment_qr para mandar la imagen del QR solo cuando
+el cliente quiere pagar por Yape específicamente (no la repitas si ya la mandaste hace poco en la
+misma conversación). Después de que confirme el pago (por cualquiera de los dos medios), pídele
+nombre, dirección y distrito para coordinar el envío.`;
 
 const ESCALATION_RULES = `Usa la herramienta escalate_to_human cuando:
 (a) el cliente pide explícitamente hablar con una persona/el dueño/soporte, o
