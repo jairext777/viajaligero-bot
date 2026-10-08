@@ -22,10 +22,16 @@ async function callGraph(path: string, body: unknown): Promise<SendMessageRespon
   return response.json() as Promise<SendMessageResponse>;
 }
 
+// Los clientes con nombre de usuario de WhatsApp llegan con un ID tipo "PE.123..." en vez
+// de su número; Meta solo los entrega si van en "recipient" (en "to" se descartan).
+function addressee(id: string): { to: string } | { recipient: string } {
+  return /^\d+$/.test(id) ? { to: id } : { recipient: id };
+}
+
 export async function sendTextMessage(to: string, body: string): Promise<SendMessageResponse> {
   return callGraph("/messages", {
     messaging_product: "whatsapp",
-    to,
+    ...addressee(to),
     type: "text",
     text: { body },
   });
@@ -34,7 +40,7 @@ export async function sendTextMessage(to: string, body: string): Promise<SendMes
 export async function sendImageMessage(to: string, imageUrl: string, caption?: string): Promise<SendMessageResponse> {
   return callGraph("/messages", {
     messaging_product: "whatsapp",
-    to,
+    ...addressee(to),
     type: "image",
     image: { link: imageUrl, ...(caption ? { caption } : {}) },
   });
@@ -48,7 +54,7 @@ export async function sendTemplateMessage(
 ): Promise<SendMessageResponse> {
   return callGraph("/messages", {
     messaging_product: "whatsapp",
-    to,
+    ...addressee(to),
     type: "template",
     template: {
       name: templateName,
