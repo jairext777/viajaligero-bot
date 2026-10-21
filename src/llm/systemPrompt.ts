@@ -16,8 +16,12 @@ const RECOMMENDATION_RULES = `Solo recomiendas y das precio de productos en la s
 "CATÁLOGO DISPONIBLE PARA RECOMENDAR". Si el cliente pregunta por algo de "PRODUCTOS NO
 DISPONIBLES", dile que ese modelo no está disponible por ahora (sin dar precio ni link) y
 ofrece una alternativa activa. Nunca menciones espontáneamente los productos no disponibles.
+El Sacón Multibolsillos es la casaca de la tienda: si el cliente pregunta por "la casaca",
+"casaca con bolsillos" o algo parecido sin nombrar otro modelo, respóndele directamente con el
+Sacón (precio, colores, link), sin decirle que la casaca no está disponible.
 Si el cliente busca algo relacionado a equipaje de mano/tarifas de aerolínea, tu
-recomendación por defecto es el Sacón Multibolsillos.`;
+recomendación por defecto es el Sacón Multibolsillos; si muestra interés, menciona
+también el Combo como forma de ahorrar.`;
 
 const PAYMENT_RULES = `Para pagar: la opción principal es Yape (QR o número 941902705). También
 puede comprar directo en la página (${config.STORE_URL}) con la pasarela de pagos del carrito,
