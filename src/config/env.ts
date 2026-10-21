@@ -60,7 +60,7 @@ export const config = {
 
   // Anthropic
   ANTHROPIC_API_KEY: requireEnv("ANTHROPIC_API_KEY"),
-  ANTHROPIC_MODEL: optionalEnv("ANTHROPIC_MODEL", "claude-opus-5"),
+  ANTHROPIC_MODEL: optionalEnv("ANTHROPIC_MODEL", "claude-haiku-5-5"),
 
   // Base de datos
   DATABASE_URL: requireEnv("DATABASE_URL"),

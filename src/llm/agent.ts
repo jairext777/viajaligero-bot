@@ -6,6 +6,7 @@ import * as escalationService from "../escalation/escalationService.js";
 import type { EscalationReason } from "../db/types.js";
 
 const MAX_TOOL_ITERATIONS = 3;
+const EMPTY_REPLY_FALLBACK = "Uy, no te entendí bien 😅 ¿Me lo cuentas de otra forma?";
 
 function extractText(content: Anthropic.ContentBlock[]): string {
   return content
@@ -45,7 +46,9 @@ export async function runAgentTurn(opts: {
     messages.push({ role: "assistant", content: response.content });
 
     if (response.stop_reason !== "tool_use") {
-      return { replyText: extractText(response.content), sendPaymentQr };
+      const replyText = extractText(response.content);
+      // Un mensaje rechazado por los filtros de seguridad llega sin texto; WhatsApp no acepta cuerpos vacíos.
+      return { replyText: replyText || EMPTY_REPLY_FALLBACK, sendPaymentQr };
     }
 
     const toolUse = response.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
