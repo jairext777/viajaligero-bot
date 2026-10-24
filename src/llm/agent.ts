@@ -1,11 +1,11 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { claude } from "./claudeClient.js";
-import { escalateToHumanTool, sendPaymentQrTool } from "./tools.js";
+import { escalateToHumanTool, sendPaymentQrTool, sendProductPhotosTool } from "./tools.js";
 import { config } from "../config/env.js";
 import * as escalationService from "../escalation/escalationService.js";
 import type { EscalationReason } from "../db/types.js";
 
-const MAX_TOOL_ITERATIONS = 3;
+const MAX_TOOL_ITERATIONS = 4;
 const EMPTY_REPLY_FALLBACK = "Uy, no te entendí bien 😅 ¿Me lo cuentas de otra forma?";
 
 function extractText(content: Anthropic.ContentBlock[]): string {
@@ -16,6 +16,12 @@ function extractText(content: Anthropic.ContentBlock[]): string {
     .trim();
 }
 
+export interface AgentResult {
+  replyText: string;
+  sendPaymentQr: boolean;
+  productPhotoIds: string[];
+}
+
 export async function runAgentTurn(opts: {
   history: Array<{ role: "user" | "assistant"; content: string }>;
   userText: string;
@@ -23,13 +29,14 @@ export async function runAgentTurn(opts: {
   conversationId: number;
   customerContactId: string;
   customerName: string | null;
-}): Promise<{ replyText: string; sendPaymentQr: boolean }> {
+}): Promise<AgentResult> {
   const messages: Anthropic.MessageParam[] = [
     ...opts.history.map((m): Anthropic.MessageParam => ({ role: m.role, content: m.content })),
     { role: "user", content: opts.userText },
   ];
 
   let sendPaymentQr = false;
+  const productPhotoIds: string[] = [];
 
   for (let i = 0; i < MAX_TOOL_ITERATIONS; i++) {
     const response = await claude.messages.create({
@@ -39,7 +46,7 @@ export async function runAgentTurn(opts: {
       output_config: { effort: "low" },
       tool_choice: { type: "auto", disable_parallel_tool_use: true },
       system: [{ type: "text", text: opts.systemPromptText, cache_control: { type: "ephemeral", ttl: "1h" } }],
-      tools: [escalateToHumanTool, sendPaymentQrTool],
+      tools: [escalateToHumanTool, sendPaymentQrTool, sendProductPhotosTool],
       messages,
     });
 
@@ -48,12 +55,22 @@ export async function runAgentTurn(opts: {
     if (response.stop_reason !== "tool_use") {
       const replyText = extractText(response.content);
       // Un mensaje rechazado por los filtros de seguridad llega sin texto; WhatsApp no acepta cuerpos vacíos.
-      return { replyText: replyText || EMPTY_REPLY_FALLBACK, sendPaymentQr };
+      return { replyText: replyText || EMPTY_REPLY_FALLBACK, sendPaymentQr, productPhotoIds };
     }
 
     const toolUse = response.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
     if (!toolUse) {
-      return { replyText: extractText(response.content), sendPaymentQr };
+      return { replyText: extractText(response.content) || EMPTY_REPLY_FALLBACK, sendPaymentQr, productPhotoIds };
+    }
+
+    if (toolUse.name === "send_product_photos") {
+      const { photo_ids } = toolUse.input as { photo_ids: string[] };
+      for (const id of photo_ids) if (!productPhotoIds.includes(id)) productPhotoIds.push(id);
+      messages.push({
+        role: "user",
+        content: [{ type: "tool_result", tool_use_id: toolUse.id, content: `Fotos enviadas: ${photo_ids.join(", ")}.` }],
+      });
+      continue;
     }
 
     if (toolUse.name === "send_payment_qr") {
@@ -92,5 +109,6 @@ export async function runAgentTurn(opts: {
   return {
     replyText: "Uy, se me cruzaron los cables 😅 ya avisé al equipo para que te ayuden directamente.",
     sendPaymentQr,
+    productPhotoIds,
   };
 }

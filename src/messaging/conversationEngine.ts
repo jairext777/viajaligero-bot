@@ -3,7 +3,7 @@ import * as db from "../db/conversations.repo.js";
 import type { Channel } from "../db/types.js";
 import { getCatalogText } from "../catalog/catalogSync.js";
 import { buildSystemPrompt } from "../llm/systemPrompt.js";
-import { runAgentTurn } from "../llm/agent.js";
+import { runAgentTurn, type AgentResult } from "../llm/agent.js";
 
 // Los clientes suelen mandar varios mensajes seguidos ("Hola" + "precio?"); se espera un
 // momento para contestarlos todos juntos en una sola respuesta en vez de una por mensaje.
@@ -21,7 +21,7 @@ export async function processIncomingMessage(opts: {
   customerName: string | null;
   userText: string;
   rawPayload?: unknown;
-}): Promise<{ replyText: string; sendPaymentQr: boolean } | null> {
+}): Promise<AgentResult | null> {
   const conversation = await db.getOrCreateConversation(opts.channel, opts.externalId, opts.customerName);
 
   await db.insertMessage({
@@ -64,7 +64,7 @@ export async function processIncomingMessage(opts: {
 async function answerPendingMessages(
   conversationId: number,
   opts: { channel: Channel; externalId: string; customerName: string | null },
-): Promise<{ replyText: string; sendPaymentQr: boolean } | null> {
+): Promise<AgentResult | null> {
   // El turno anterior pudo haber escalado la conversación mientras este esperaba.
   const current = await db.getConversationById(conversationId);
   if (!current || current.status === "escalated") return null;
@@ -82,7 +82,7 @@ async function answerPendingMessages(
   const catalogText = await getCatalogText();
   const systemPromptText = buildSystemPrompt(catalogText, opts.channel);
 
-  const { replyText, sendPaymentQr } = await runAgentTurn({
+  const result = await runAgentTurn({
     history: recent.slice(0, firstPending),
     userText: pending.map((m) => m.content).join("\n"),
     systemPromptText,
@@ -98,9 +98,9 @@ async function answerPendingMessages(
     conversationId,
     externalMessageId: null,
     role: "assistant",
-    content: replyText,
+    content: result.replyText,
     createdAt: new Date(answeredUpTo.getTime() + 1),
   });
 
-  return { replyText, sendPaymentQr };
+  return result;
 }

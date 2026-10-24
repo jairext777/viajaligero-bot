@@ -1,4 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk";
+import { getProductPhotos } from "../catalog/catalogSync.js";
 
 export const escalateToHumanTool: Anthropic.Tool = {
   name: "escalate_to_human",
@@ -32,6 +33,26 @@ export const sendPaymentQrTool: Anthropic.Tool = {
     type: "object",
     properties: {},
     required: [],
+    additionalProperties: false,
+  },
+};
+
+// Se arma una sola vez al arrancar (no por mensaje) para no romper el caché del prompt.
+const photos = getProductPhotos();
+export const sendProductPhotosTool: Anthropic.Tool = {
+  name: "send_product_photos",
+  description:
+    "Envía al cliente fotos de productos por este chat. Úsala cuando pida ver fotos, el producto o " +
+    "los colores. Elige solo las fotos que pidió (todas si quiere ver todos los colores). Fotos " +
+    "disponibles: " + photos.map((p) => `${p.id} (${p.caption})`).join(", ") + ". No repitas fotos que " +
+    "ya mandaste hace poco en la misma conversación.",
+  strict: true,
+  input_schema: {
+    type: "object",
+    properties: {
+      photo_ids: { type: "array", items: { type: "string", enum: photos.map((p) => p.id) } },
+    },
+    required: ["photo_ids"],
     additionalProperties: false,
   },
 };

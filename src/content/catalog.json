@@ -39,5 +39,22 @@
     "Cartuchera de higiene",
     "Porta medicamentos",
     "Porta pasaporte"
+  ],
+  "photos": [
+    {
+      "id": "sacon-negro",
+      "caption": "Sacón Multibolsillos — negro",
+      "file": "products/sacon-negro.jpg"
+    },
+    {
+      "id": "sacon-plateado",
+      "caption": "Sacón Multibolsillos — plateado",
+      "file": "products/sacon-plateado.jpg"
+    },
+    {
+      "id": "sacon-verde-militar",
+      "caption": "Sacón Multibolsillos — verde militar",
+      "file": "products/sacon-verde-militar.jpg"
+    }
   ]
 }

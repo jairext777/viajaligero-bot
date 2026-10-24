@@ -12,9 +12,16 @@ interface CatalogProduct {
   link: string;
 }
 
+export interface ProductPhoto {
+  id: string;
+  caption: string;
+  file: string;
+}
+
 interface CatalogData {
   available: CatalogProduct[];
   hidden: string[];
+  photos: ProductPhoto[];
 }
 
 function loadCatalog(): CatalogData {
@@ -45,4 +52,8 @@ export async function getCatalogText(): Promise<string> {
     "PRODUCTOS NO DISPONIBLES (NO recomendar, NO dar precio ni link; si preguntan por ellos, decir que no está disponible por ahora y ofrecer una alternativa del catálogo disponible):",
     hiddenBlock,
   ].join("\n");
+}
+
+export function getProductPhotos(): ProductPhoto[] {
+  return loadCatalog().photos;
 }
