@@ -24,10 +24,11 @@ export async function insertMessage(opts: {
   role: MessageRole;
   content: string;
   rawPayload?: unknown;
+  createdAt?: Date;
 }): Promise<void> {
   await pool.query(
-    `INSERT INTO messages (conversation_id, external_message_id, role, content, raw_payload)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO messages (conversation_id, external_message_id, role, content, raw_payload, created_at)
+     VALUES ($1, $2, $3, $4, $5, COALESCE($6, now()))
      ON CONFLICT (external_message_id) DO NOTHING`,
     [
       opts.conversationId,
@@ -35,6 +36,7 @@ export async function insertMessage(opts: {
       opts.role,
       opts.content,
       opts.rawPayload ? JSON.stringify(opts.rawPayload) : null,
+      opts.createdAt ?? null,
     ],
   );
 }
@@ -42,9 +44,9 @@ export async function insertMessage(opts: {
 export async function getRecentMessages(
   conversationId: number,
   opts: { hours: number; limit: number },
-): Promise<Array<{ role: MessageRole; content: string }>> {
-  const result = await pool.query<{ role: MessageRole; content: string }>(
-    `SELECT role, content FROM (
+): Promise<Array<{ role: MessageRole; content: string; created_at: Date }>> {
+  const result = await pool.query<{ role: MessageRole; content: string; created_at: Date }>(
+    `SELECT role, content, created_at FROM (
        SELECT role, content, created_at FROM messages
        WHERE conversation_id = $1 AND created_at > now() - ($2 || ' hours')::interval
        ORDER BY created_at DESC
