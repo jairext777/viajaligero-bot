@@ -1,3 +1,4 @@
+import { asTeamMessage } from "../messaging/teamMessage.js";
 import { sendTemplateMessage, sendTextMessage } from "../whatsapp/whatsappClient.js";
 import { buildEscalationTemplateParams } from "./templates.js";
 import { config } from "../config/env.js";
@@ -91,7 +92,7 @@ export async function relayTeamReply(repliedToWamid: string, fromNumber: string,
   }
 
   await sendReply(conversation.channel, conversation.customer_external_id, text);
-  await db.insertMessage({ conversationId, externalMessageId: null, role: "assistant", content: text });
+  await db.insertMessage({ conversationId, externalMessageId: null, role: "assistant", content: asTeamMessage(text) });
   return true;
 }
 

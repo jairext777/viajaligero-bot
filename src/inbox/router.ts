@@ -5,6 +5,7 @@ import * as db from "../db/conversations.repo.js";
 import { renderConversationList, renderConversationThread } from "./render.js";
 import { sendReply } from "../messaging/sendReply.js";
 import { logger } from "../util/logger.js";
+import { asTeamMessage } from "../messaging/teamMessage.js";
 
 export const inboxRouter = Router();
 
@@ -55,7 +56,7 @@ inboxRouter.post("/internal/inbox/:id/reply", async (req: Request, res: Response
 
   try {
     await sendReply(conversation.channel, conversation.customer_external_id, text);
-    await db.insertMessage({ conversationId: id, externalMessageId: null, role: "assistant", content: text });
+    await db.insertMessage({ conversationId: id, externalMessageId: null, role: "assistant", content: asTeamMessage(text) });
     if (conversation.status === "escalated") {
       await db.resolveConversation(id, "internal-inbox");
     }

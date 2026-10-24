@@ -1,6 +1,7 @@
 import { getFaqText } from "./faq.js";
 import { config } from "../config/env.js";
 import type { Channel } from "../db/types.js";
+import { TEAM_MESSAGE_PREFIX } from "../messaging/teamMessage.js";
 
 const PERSONA = `Eres el asistente de Viaje Ligero, tienda peruana de "travel coats" y
 accesorios para viajar sin pagar de más por equipaje de mano. Hablas en español de Perú,
@@ -10,7 +11,10 @@ Mensajes cortos (esto es chat, no un correo). Máximo un emoji de viaje por mens
 
 const SCOPE_RULES = `Solo hablas de productos y políticas de Viaje Ligero. Si preguntan algo
 totalmente ajeno, redirige con humor breve. Nunca inventes precios, políticas de envío,
-tiempos de entrega ni stock que no estén en el CATÁLOGO o las PREGUNTAS FRECUENTES de abajo.`;
+tiempos de entrega ni stock que no estén en el CATÁLOGO o las PREGUNTAS FRECUENTES de abajo.
+No prometas avisarle o escribirle más tarde: solo puedes responder cuando el cliente te escribe.
+Si te pide algo que no tienes (por ejemplo, fotos por acá), dile dónde encontrarlo (el link del
+producto tiene las fotos) o usa escalate_to_human para que el equipo se lo mande.`;
 
 const RECOMMENDATION_RULES = `Solo recomiendas y das precio de productos en la sección
 "CATÁLOGO DISPONIBLE PARA RECOMENDAR". Si el cliente pregunta por algo de "PRODUCTOS NO
@@ -38,6 +42,11 @@ const ESCALATION_RULES = `Usa la herramienta escalate_to_human cuando:
 realizados, garantías no cubiertas, preguntas fuera de lo que sabes).
 No la uses para preguntas que sí puedes responder con el catálogo o las FAQ.
 Después de escalar, avisa al cliente de forma cálida que ya está en manos del equipo.`;
+
+const TEAM_MESSAGE_RULES = `En el historial, los mensajes que empiezan con "${TEAM_MESSAGE_PREFIX.trim()}"
+los escribió una persona del equipo, no tú: el cliente los recibió sin esa marca. Lo que dicen
+es información confirmada por la tienda aunque no esté en el catálogo ni en las FAQ: úsala si
+viene al caso y nunca la contradigas, corrijas ni te disculpes por ella. Tú nunca escribas esa marca.`;
 
 const NON_TEXT_RULES = `Si el mensaje del cliente aparece como "[audio]", "[imagen]", "[video]"
 u otro tipo entre corchetes, es porque el cliente envió algo que no puedes leer directamente:
@@ -74,6 +83,7 @@ export function buildSystemPrompt(catalogBlock: string, channel: Channel = "what
     faqBlock,
     PAYMENT_RULES,
     ESCALATION_RULES,
+    TEAM_MESSAGE_RULES,
     NON_TEXT_RULES,
   ].join("\n\n");
 }

@@ -65,6 +65,8 @@ async function handleSupportTeamMessage(message: WhatsAppMessage, senderId: stri
 }
 
 async function handleCustomerMessage(message: WhatsAppMessage, value: WhatsAppValue, senderId: string): Promise<void> {
+  // Una reacción con emoji no es un mensaje nuevo: responderla interrumpe la conversación.
+  if (message.type === "reaction") return;
   const customerName = findContactName(value, senderId);
   const userText = extractUserText(message);
 
