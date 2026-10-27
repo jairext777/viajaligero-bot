@@ -81,7 +81,7 @@ export function renderConversationThread(
       : "";
 
   const replyForm = `
-    <form class="reply-form" method="POST" action="/internal/inbox/${conversation.id}/reply">
+    <form class="reply-form" method="POST" action="/internal/inbox/${conversation.id}/reply" onsubmit="this.querySelector('button').disabled = true">
       <input type="text" name="text" placeholder="Escribe tu respuesta..." required autocomplete="off">
       <button type="submit">Enviar</button>
     </form>`;
