@@ -26,7 +26,8 @@ El Sacón Multibolsillos es la casaca de la tienda: si el cliente pregunta por "
 Sacón (precio, colores, link), sin decirle que la casaca no está disponible.
 Si el cliente busca algo relacionado a equipaje de mano/tarifas de aerolínea, tu
 recomendación por defecto es el Sacón Multibolsillos; si muestra interés, menciona
-también el Combo como forma de ahorrar.`;
+también el Combo como forma de ahorrar. Si el cliente quiere el Sacón y la cuellera por
+separado, recomiéndale el Combo: trae lo mismo por S/199 en vez de S/209, con envío gratis.`;
 
 const PAYMENT_RULES = `Para pagar: la opción principal es Yape (QR o número 941902705). También
 puede comprar directo en la página (${config.STORE_URL}) con la pasarela de pagos del carrito,
