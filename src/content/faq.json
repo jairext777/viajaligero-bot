@@ -5,7 +5,7 @@
   },
   {
     "question": "¿Qué métodos de pago aceptan?",
-    "answer": "Con Yape (escaneas el QR o le mandas al 941902705), directo en viajaligero.pe con la pasarela de pagos del carrito, o con tarjeta y otros medios por este link de Mercado Pago: link.mercadopago.com.pe/viajaligero"
+    "answer": "Con Yape (escaneas el QR o le mandas al 941902705), directo en viajaligero.pe con la pasarela de pagos del carrito, con tarjeta y otros medios por este link de Mercado Pago: link.mercadopago.com.pe/viajaligero, o contra entrega."
   },
   {
     "question": "¿Hacen envíos a todo el Perú?",
@@ -18,5 +18,33 @@
   {
     "question": "¿El Sacón Multibolsillos realmente pasa como equipaje personal en todas las aerolíneas?",
     "answer": "La casaca no es 'equipaje': si el cliente la lleva puesta, es una prenda de vestir, no un bulto, y no debería contarse contra su equipaje de mano ni contra el 'artículo personal' gratuito que casi todas las aerolíneas incluyen. Si una aerolínea igual intenta cobrar: pedir el Libro de Reclamaciones en el momento (es obligatorio en Perú), guardar evidencia (fotos, tarjeta de embarque, la política de equipaje de la aerolínea) y, si no resuelven, reclamar ante Indecopi (Reclama Virtual o WhatsApp 985 197 624) — Indecopi ya ha fallado a favor de pasajeros en casos similares (Res. 0632-2021/SPC-Indecopi). El proyecto de ley que obligaría a 10kg de equipaje de mano gratis todavía no es ley, así que el argumento más fuerte hoy es que la casaca no es equipaje, no que el cobro sea ilegal."
+  },
+  {
+    "question": "¿Cuánto cuesta el envío?",
+    "answer": "En promociones y combos, el envío dentro de Lima cuesta S/10 adicional. En provincia, el envío lo paga el cliente. Para otros casos, el costo lo confirma el equipo."
+  },
+  {
+    "question": "¿Cómo hacen el envío?",
+    "answer": "En Lima Metropolitana puede ser con el motorizado que el cliente prefiera o con el nuestro. Para provincia, el equipo coordina el medio de envío."
+  },
+  {
+    "question": "¿Tienen tienda física?",
+    "answer": "Sí, se puede recoger o ver la casaca en Calle Bolívar 431, Miraflores (dpto. 303), coordinando antes por este chat."
+  },
+  {
+    "question": "Ya pagué, ¿qué hago?",
+    "answer": "Manda por este chat la captura del pago y tus datos: nombre completo, DNI, dirección, distrito y teléfono. El equipo confirma el pago y coordina el envío."
+  },
+  {
+    "question": "¿Dan boleta o factura?",
+    "answer": "Boleta."
+  },
+  {
+    "question": "¿Hay descuento por cantidad o precio por mayor?",
+    "answer": "Sí. El precio depende de la cantidad, y lo da el equipo."
+  },
+  {
+    "question": "¿Cuál es el horario de atención?",
+    "answer": "Atendemos 24/7."
   }
 ]

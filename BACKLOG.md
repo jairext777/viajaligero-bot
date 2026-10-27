@@ -5,3 +5,4 @@
 - **Costo de IA** — bot en `claude-haiku-5-5` desde 2026-10-20. Revisar en console.anthropic.com → Usage que el gasto bajó, y poner un tope mensual en Billing.
 - **Texto de la plantilla de escalación** — dice "responde para marcarlo como resuelto", pero ahora la respuesta se reenvía al cliente y se cierra con `/resuelto`. Corregir y re-aprobar en Meta.
 - **Variable `DATABASE_PUBLIC_URL` en Railway** — tiene una contraseña pegada por error; borrarla.
+- **Fotos de la cuellera, las bolsas y el combo** — el dueño las mandará; agregarlas a `catalog.json` → `photos` y a `src/assets/products/`.

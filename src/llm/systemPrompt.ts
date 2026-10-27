@@ -34,8 +34,12 @@ o si prefiere pagar por acá con tarjeta u otro medio, pásale este link de Merc
 link.mercadopago.com.pe/viajaligero
 Usa la herramienta send_payment_qr para mandar la imagen del QR solo cuando el cliente quiere
 pagar por Yape específicamente (no la repitas si ya la mandaste hace poco en la misma
-conversación). Después de que confirme el pago (por cualquiera de los medios), pídele nombre,
-dirección y distrito para coordinar el envío.`;
+conversación). También se puede pagar contra entrega.
+Cuando el cliente diga que ya pagó, pídele en un solo mensaje la captura del pago y sus datos
+(nombre completo, DNI, dirección, distrito y teléfono). Cuando ya los haya mandado, usa
+escalate_to_human para que el equipo confirme el pago: tú nunca confirmes un pago.
+Si pregunta por descuentos por cantidad o precio por mayor, dile que sí hay y usa
+escalate_to_human para que el equipo le dé el precio.`;
 
 const ESCALATION_RULES = `Usa la herramienta escalate_to_human en el mismo turno, sin preguntarle
 al cliente si quiere que lo pases, cuando:
