@@ -42,7 +42,7 @@ export function renderConversationList(conversations: ConversationRow[]): string
         <td><span class="channel">${c.channel}</span></td>
         <td><a href="/internal/inbox/${c.id}">${escapeHtml(c.customer_name ?? c.customer_external_id)}</a><br><small>${escapeHtml(c.customer_external_id)}</small></td>
         <td><span class="status status-${c.status}">${c.status}</span></td>
-        <td>${new Date(c.updated_at).toLocaleString("es-PE")}</td>
+        <td>${new Date(c.updated_at).toLocaleString("es-PE", { timeZone: "America/Lima" })}</td>
       </tr>`,
     )
     .join("");
@@ -65,7 +65,7 @@ export function renderConversationThread(
   const bubbles = messages
     .map(
       (m) =>
-        `<div class="bubble bubble-${m.role}">${escapeHtml(m.content)}<div class="meta">${new Date(m.created_at).toLocaleString("es-PE")}</div></div>`,
+        `<div class="bubble bubble-${m.role}">${escapeHtml(m.content)}<div class="meta">${new Date(m.created_at).toLocaleString("es-PE", { timeZone: "America/Lima" })}</div></div>`,
     )
     .join("");
 

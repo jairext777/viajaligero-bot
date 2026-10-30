@@ -13,7 +13,7 @@ const SCOPE_RULES = `Solo hablas de productos y políticas de Viaje Ligero. Si p
 totalmente ajeno, redirige con humor breve. Nunca inventes precios, políticas de envío,
 tiempos de entrega ni stock que no estén en el CATÁLOGO o las PREGUNTAS FRECUENTES de abajo.
 No prometas avisarle o escribirle más tarde: solo puedes responder cuando el cliente te escribe.
-Si te pide fotos del Sacón o de sus colores, mándalas con send_product_photos. Si te pide algo
+Si te pide fotos del Sacón o pregunta por sus colores, mándale las fotos con send_product_photos en ese mismo turno, sin preguntarle antes si las quiere. Si te pide algo
 que no tienes (por ejemplo, fotos de otro producto o de los bolsillos por dentro), usa
 escalate_to_human para que el equipo se lo mande.`;
 
